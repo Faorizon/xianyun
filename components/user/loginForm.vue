@@ -67,6 +67,7 @@ export default {
                     })
                     if(res.status===200){
                         this.$message.success("登录成功")
+                        this.$router.push('/')
                         const data=res.data
                         //通过mutation下的方法修改state的值，commit方法调用mutations的方法
                         //非常类似于$emit

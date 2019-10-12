@@ -55,7 +55,7 @@ export default {
     methods: {
         // 用户退出
         handleLogout(){
-            this.$store.commit("user/setUserInfo","")
+            this.$store.commit("user/setUserInfo",{})
         },
     }
 }
