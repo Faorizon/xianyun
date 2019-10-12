@@ -6,12 +6,14 @@
         class="form">
             <el-form-item class="form-item" prop="username">
                 <el-input 
+                v-model="form.username"
                 placeholder="用户名手机">
                 </el-input>
             </el-form-item>
 
             <el-form-item class="form-item" prop="captcha">
-                <el-input 
+                <el-input
+                v-model="form.captcha" 
                 placeholder="验证码" >
                     <template slot="append">
                         <el-button @click="handleSendCaptcha">
@@ -22,13 +24,15 @@
             </el-form-item>
 
             <el-form-item class="form-item" prop="nickname">
-                <el-input 
+                <el-input
+                v-model="form.nickname" 
                 placeholder="你的名字">
                 </el-input>
             </el-form-item>
 
             <el-form-item class="form-item" prop="password">
                 <el-input 
+                v-model="form.password"
                 placeholder="密码" 
                 type="password"
                 ></el-input>
@@ -36,6 +40,7 @@
 
             <el-form-item class="form-item" prop="checkPassword">
                 <el-input 
+                v-model="form.checkPassword"
                 placeholder="确认密码" 
                 type="password">
                 </el-input>
@@ -94,14 +99,44 @@ export default {
     },
     methods: {
         // 发送验证码
-        handleSendCaptcha(){
-
+        async handleSendCaptcha(){
+            if(!this.form.username){
+                this.$message.error("手机号不能为空");
+                return;
+            }
+            const res=await this.$axios({
+                url:'captchas',
+                method:'post',
+                data:{
+                    tel:this.form.username //手机号码
+                }
+            });
+            const {code}=res.data;
+            //打印出手机的验证码
+            this.$message.success(`当前手机验证码是：${code}`)
         },
 
 
         // 注册
         handleRegSubmit(){
-           console.log(this.form)
+           this.$refs.form.validate(async (valid) => {
+                if (valid) {
+                    const {checkPassword,...props}=this.form
+                    //请求注册的接口
+                    const res=await this.$axios({
+                        url:"/accounts/register",
+                        method:"post",
+                        data:props
+                    })
+                    if(res.status===200){
+                        this.$message.success('注册成功');
+                        this.$router.push("/")
+                        const data=res.data;
+                        this.$store.commit("user/setUserInfo",data)
+                    }
+                    
+                } 
+            });
         }
     }
 }
