@@ -58,15 +58,20 @@ export default {
         // 提交登录
         handleLoginSubmit(){
             //表单验证
-            this.$refs.form.validate((valid) => {
+            this.$refs.form.validate(async (valid) => {
                 if (valid) {
-                    this.$axios({
+                    var res= await this.$axios({
                         url:'/accounts/login',
                         method:'post',
                         data:this.form
-                    }).then(res=>{
-                        console.log(res.data)
                     })
+                    if(res.status===200){
+                        this.$message.success("登录成功")
+                        const data=res.data
+                        //通过mutation下的方法修改state的值，commit方法调用mutations的方法
+                        //非常类似于$emit
+                        this.$store.commit("user/setUserInfo",data)
+                    }
                 }
             });
             
