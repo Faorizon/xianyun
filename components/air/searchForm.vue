@@ -109,6 +109,7 @@ export default {
             if(this.cities.length > 0){
                 this.form.departCity=this.cities[0].value;
                 this.form.departCode=this.cities[0].sort;
+                this.handleDepartSelect(this.cities[0])
             }
         },
 
@@ -124,7 +125,10 @@ export default {
        
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
-            
+            // console.log(item)
+            //获取到表单需要的机票信息
+            this.form.departCity=item.value;
+            this.form.departCode=item.sort;
         },
 
         // 目标城市下拉选择时触发
