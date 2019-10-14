@@ -25,5 +25,27 @@ export const actions={
             store.commit("setUserInfo",res.data)
         }
         return res;
+    },
+    async sendCaptcha(store,tel){
+        const res = await this.$axios({
+            url:'/captchas',
+            method:'post',
+            data:{
+                tel
+            }
+        });
+        return res;
+    },
+    async register(store,data){
+        //请求注册的接口
+        const res=await this.$axios({
+            url:"/accounts/register",
+            method:"post",
+            data
+        });
+        if(res.status===200){
+            store.commit("setUserInfo",res.data)
+        }
+        return res;
     }
 }

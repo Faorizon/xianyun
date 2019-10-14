@@ -104,13 +104,7 @@ export default {
                 this.$message.error("手机号不能为空");
                 return;
             }
-            const res=await this.$axios({
-                url:'captchas',
-                method:'post',
-                data:{
-                    tel:this.form.username //手机号码
-                }
-            });
+            const res=await this.$store.dispatch("user/sendCaptcha",this.form.username)
             const {code}=res.data;
             //打印出手机的验证码
             this.$message.success(`当前手机验证码是：${code}`)
@@ -122,19 +116,12 @@ export default {
            this.$refs.form.validate(async (valid) => {
                 if (valid) {
                     const {checkPassword,...props}=this.form
-                    //请求注册的接口
-                    const res=await this.$axios({
-                        url:"/accounts/register",
-                        method:"post",
-                        data:props
-                    })
+                    const res=await this.$store.dispatch("user/register",props)
+                    console.log(res)
                     if(res.status===200){
-                        this.$message.success('注册成功');
+                        this.$message.success("注册成功")
                         this.$router.push("/")
-                        const data=res.data;
-                        this.$store.commit("user/setUserInfo",data)
                     }
-                    
                 } 
             });
         }
