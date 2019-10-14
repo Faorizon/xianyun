@@ -60,19 +60,12 @@ export default {
             //表单验证
             this.$refs.form.validate(async (valid) => {
                 if (valid) {
-                    var res= await this.$axios({
-                        url:'/accounts/login',
-                        method:'post',
-                        data:this.form
-                    })
-                    if(res.status===200){
-                        this.$message.success("登录成功")
-                        this.$router.push('/')
-                        const data=res.data
-                        //通过mutation下的方法修改state的值，commit方法调用mutations的方法
-                        //非常类似于$emit
-                        this.$store.commit("user/setUserInfo",data)
-                    }
+                    //this.$store.state.dispatch用于调用actions的方法
+                   const res= await this.$store.dispatch("user/login",this.form)
+                   if(res.status===200){
+                       this.$message.success("登录成功");
+                       this.$router.push("/")
+                   }
                 }
             });
             

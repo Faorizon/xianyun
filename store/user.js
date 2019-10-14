@@ -14,4 +14,16 @@ export const mutations={
     },
 };
 
-export const actions={}
+export const actions={
+    async login(store,data){
+        var res= await this.$axios({
+            url:'/accounts/login',
+            method:'post',
+            data
+        })
+        if(res.status===200){
+            store.commit("setUserInfo",res.data)
+        }
+        return res;
+    }
+}
