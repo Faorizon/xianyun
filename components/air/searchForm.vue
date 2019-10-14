@@ -20,6 +20,7 @@
                 @select="handleDepartSelect"
                 class="el-autocomplete"
                 v-model="form.departCity"
+                @blur="handleDepartBlur"
                 ></el-autocomplete>
             </el-form-item>
             <el-form-item label="到达城市">
@@ -69,7 +70,9 @@ export default {
                 destCity:"",//到达城市
                 destCode:"",//到达城市代码
                 departDate:"",//日期字符串
-            }
+            },
+            //存放newData的城市的数组
+            cities:[]
         }
     },
     methods: {
@@ -82,7 +85,10 @@ export default {
         // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDepartSearch(value, cb){
             //输入框为空时不请求
-            if(!value) return;
+            if(!value){
+                cb([]);
+                return;
+            };
             this.$axios({
                 url:"/airs/city?name="+value
             }).then(res=>{
@@ -93,9 +99,17 @@ export default {
                     v.value=v.name.replace("市","")
                     return v;
                 })
+                this.cities=newData
                 //调用回调函数，将返回数据显示到下拉框
                 cb(newData)
             })
+        },
+        //出发城市失去焦点时默认选中第一个
+        handleDepartBlur(){
+            if(this.cities.length > 0){
+                this.form.departCity=this.cities[0].value;
+                this.form.departCode=this.cities[0].sort;
+            }
         },
 
         // 目标城市输入框获得焦点时触发
