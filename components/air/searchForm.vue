@@ -19,6 +19,7 @@
                 placeholder="请搜索出发城市"
                 @select="handleDepartSelect"
                 class="el-autocomplete"
+                v-model="form.departCity"
                 ></el-autocomplete>
             </el-form-item>
             <el-form-item label="到达城市">
@@ -61,6 +62,14 @@ export default {
                 {icon: "iconfont iconshuangxiang", name: "往返"}
             ],
             currentTab: 0,
+            //最终表单要提交的属性
+            form:{
+                departCity:"",//出发城市
+                departCode:"",//出发城市代码
+                destCity:"",//到达城市
+                destCode:"",//到达城市代码
+                departDate:"",//日期字符串
+            }
         }
     },
     methods: {
@@ -72,11 +81,21 @@ export default {
         // 出发城市输入框获得焦点时触发
         // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDepartSearch(value, cb){
-            cb([
-                {value: 1},
-                {value: 2},
-                {value: 3},
-            ]);
+            //输入框为空时不请求
+            if(!value) return;
+            this.$axios({
+                url:"/airs/city?name="+value
+            }).then(res=>{
+                //data是后台返回的城市数组，没有value属性
+                const {data} =res.data
+                // console.log(data)
+                const newData=data.map(v=>{
+                    v.value=v.name.replace("市","")
+                    return v;
+                })
+                //调用回调函数，将返回数据显示到下拉框
+                cb(newData)
+            })
         },
 
         // 目标城市输入框获得焦点时触发
