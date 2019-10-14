@@ -82,11 +82,7 @@ export default {
         // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDepartSearch(value, cb){
             //输入框为空时不请求
-            if(!value){
-                //不显示下拉框
-                cb([]);
-                return;
-            };
+            if(!value) return;
             this.$axios({
                 url:"/airs/city?name="+value
             }).then(res=>{
@@ -114,10 +110,7 @@ export default {
        
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
-            // console.log(item)
-            //获取到表单需要的机票信息
-            this.form.departCity=item.value;
-            this.form.departCode=item.sort;
+            
         },
 
         // 目标城市下拉选择时触发
@@ -137,7 +130,7 @@ export default {
 
         // 提交表单是触发
         handleSubmit(){
-           console.log(this.form)
+           
         }
     },
     mounted() {
