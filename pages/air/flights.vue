@@ -23,6 +23,7 @@
                     :item="item"
                     />
                     <el-pagination
+                    v-if="flightsData.flights.length"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="pageIndex"
@@ -31,6 +32,10 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="flightsData.total">
                     </el-pagination>
+                    <!-- loading等于false表示加载完毕之后才显示 -->
+                    <div v-if="flightsData.flights.length === 0 && !loading" style="padding: 50px; text-align:center">
+                        该航班暂无数据
+                    </div>
                 </div>
             </div>
 
@@ -66,7 +71,9 @@ export default {
             //当前页数
             pageIndex:1,
             //当前的条数
-            pageSize:5
+            pageSize:5,
+            //判断是否在加载
+            loading:true
         }
     },
     computed:{
@@ -108,6 +115,8 @@ export default {
             //第一页的数据
             // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
             // console.log(res.data)
+            //请求完毕
+            this.loading=false;
         })
     }
 }
