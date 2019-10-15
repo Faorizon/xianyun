@@ -17,7 +17,11 @@
                 
                 <!-- 航班信息 -->
                 <div>
-                    <FlightsItem/>
+                    <FlightsItem
+                    v-for="(item,index) in flightsData.flights"
+                    :key="index"
+                    :item="item"
+                    />
                 </div>
             </div>
 
@@ -41,8 +45,21 @@ export default {
     },
     data(){
         return {
-            
+            //请求机票列表返回的总数据，包含了flights,info,options,total
+            flightsData:{}
         }
+    },
+    mounted(){
+        //请求机票列表数据
+        this.$axios({
+            url:"airs",
+            //params是axios的get参数
+            params:this.$route.query
+        }).then(res=>{
+            //保存到机票的总数据
+            this.flightsData=res.data
+            console.log(res.data)
+        })
     }
 }
 </script>
