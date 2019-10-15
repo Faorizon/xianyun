@@ -13,7 +13,7 @@
                             <span>{{item.org_airport_name}} {{item.org_airport_quay}}</span>
                         </el-col>
                         <el-col :span="8" class="flight-time">
-                            <span>2时20分</span>
+                            <span>{{rankTime}}</span>
                         </el-col>
                         <el-col :span="8" class="flight-airport">
                             <strong>{{item.arr_time}}</strong>
@@ -61,7 +61,31 @@
 
 <script>
 export default {
+    //计算属性，监听组件内容引用的实例的属性的变化
+    computed:{
+        rankTime(){
+            const arrTime=this.item.arr_time.split(":")
+            const depTime=this.item.dep_time.split(":")
 
+            //第二天
+            if(arrTime[0] < depTime[0]){
+                arrTime[0] += 24;
+            }
+
+
+            //到达时间的分钟
+            const end=arrTime[0]*60+(+arrTime[1])
+            //出发时间的分钟
+            const start=depTime[0]*60+(+depTime[1])
+            //总时长
+            const dis=end-start
+            //换算为路程所需小时数
+            const hours=Math.floor(dis/60);
+            //所需分钟
+            const min=dis % 60;
+            return `${hours}小时${min}分钟`
+        }
+    },
     props: {
         // 数据
         item: {
