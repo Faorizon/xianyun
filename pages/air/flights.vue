@@ -18,12 +18,22 @@
                 <!-- 航班信息 -->
                 <div>
                     <FlightsItem
-                    v-for="(item,index) in flightsData.flights"
+                    v-for="(item,index) in dataList"
                     :key="index"
                     :item="item"
                     />
+                    <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageIndex"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="flightsData.total">
+                    </el-pagination>
                 </div>
             </div>
+
 
             <!-- 侧边栏 -->
             <div class="aside">
@@ -46,7 +56,29 @@ export default {
     data(){
         return {
             //请求机票列表返回的总数据，包含了flights,info,options,total
-            flightsData:{}
+            flightsData:{},
+
+            //从flights总列表数据中切割出来数组列表
+            dataList:[],
+            //当前页数
+            pageIndex:1,
+            //当前的条数
+            pageSize:5
+        }
+    },
+    methods:{
+        handleSizeChange(val) {
+            this.pageSize=val
+            this.dataList=this.flightsData.flights.slice(0,this.pageSize)
+        },
+        handleCurrentChange(val) {
+            //修改当前的页数
+            this.pageIndex=val
+            //修改机票列表
+            this.dataList=this.flightsData.flights.slice(
+                (this.pageIndex-1)*this.pageSize,
+                this.pageIndex*this.pageSize
+            )
         }
     },
     mounted(){
@@ -58,6 +90,9 @@ export default {
         }).then(res=>{
             //保存到机票的总数据
             this.flightsData=res.data
+
+            //第一页的数据
+            this.dataList=this.flightsData.flights.slice(0,this.pageSize)
             console.log(res.data)
         })
     }
