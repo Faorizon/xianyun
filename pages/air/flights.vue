@@ -56,29 +56,43 @@ export default {
     data(){
         return {
             //请求机票列表返回的总数据，包含了flights,info,options,total
-            flightsData:{},
+            flightsData:{
+                //初始值
+                flights:[]
+            },
 
             //从flights总列表数据中切割出来数组列表
-            dataList:[],
+            // dataList:[],
             //当前页数
             pageIndex:1,
             //当前的条数
             pageSize:5
         }
     },
+    computed:{
+        //从flights总列表数据中切割出来数组列表
+        dataList(){
+            const arr=this.flightsData.flights.slice(
+                (this.pageIndex-1)*this.pageSize,
+                this.pageIndex*this.pageSize
+            )
+            return arr;
+        }
+    },
     methods:{
         handleSizeChange(val) {
             this.pageSize=val
-            this.dataList=this.flightsData.flights.slice(0,this.pageSize)
+            //重新回到第一页
+            // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
         },
         handleCurrentChange(val) {
             //修改当前的页数
             this.pageIndex=val
             //修改机票列表
-            this.dataList=this.flightsData.flights.slice(
-                (this.pageIndex-1)*this.pageSize,
-                this.pageIndex*this.pageSize
-            )
+            // this.dataList=this.flightsData.flights.slice(
+            //     (this.pageIndex-1)*this.pageSize,
+            //     this.pageIndex*this.pageSize
+            // )
         }
     },
     mounted(){
@@ -92,8 +106,8 @@ export default {
             this.flightsData=res.data
 
             //第一页的数据
-            this.dataList=this.flightsData.flights.slice(0,this.pageSize)
-            console.log(res.data)
+            // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
+            // console.log(res.data)
         })
     }
 }
