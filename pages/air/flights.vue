@@ -6,7 +6,7 @@
             <div class="flights-content">
                 <!-- 过滤条件 -->
                 <div>
-                    
+                    <FlightsFilters :flightsData="flightsData"/>
                 </div>
                 
                 <!-- 航班头部布局 -->
@@ -53,17 +53,21 @@
 import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead.vue"
 import FlightsItem from "@/components/air/flightsItem.vue"
+import FlightsFilters from "@/components/air/flightsFilters.vue"
 export default {
     components:{
         FlightsListHead,
-        FlightsItem
+        FlightsItem,
+        FlightsFilters
     },
     data(){
         return {
             //请求机票列表返回的总数据，包含了flights,info,options,total
             flightsData:{
                 //初始值
-                flights:[]
+                flights:[],
+                info:{},
+                options:{}
             },
 
             //从flights总列表数据中切割出来数组列表
@@ -114,7 +118,7 @@ export default {
 
             //第一页的数据
             // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
-            // console.log(res.data)
+            console.log(res.data)
             //请求完毕
             this.loading=false;
         })
