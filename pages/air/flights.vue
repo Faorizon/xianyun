@@ -9,7 +9,7 @@
                 <!-- setDataList用于修改过滤后的数组列表 -->
                 <div>
                     <FlightsFilters 
-                    :data="flightsData"
+                    :data="cacheFlightsData"
                     @setDataList="setDataList"
                     />
                 </div>
@@ -35,7 +35,7 @@
                     :page-sizes="[5, 10, 15, 20]"
                     :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="flightsData.total">
+                    :total="total">
                     </el-pagination>
                     <!-- loading等于false表示加载完毕之后才显示 -->
                     <div v-if="flightsData.flights.length === 0 && !loading" style="padding: 50px; text-align:center">
@@ -88,7 +88,9 @@ export default {
             //当前的条数
             pageSize:5,
             //判断是否在加载
-            loading:true
+            loading:true,
+            //分页条数
+            total:0
         }
     },
     computed:{
@@ -106,15 +108,10 @@ export default {
         //arr 是展示的新数据，该方法将会传递给过滤组件使用
         setDataList(arr){
             //如果数据从第一页开始显示
-            if(arr){
                 this.pageIndex=1;
                 this.flightsData.flights=arr;
-                this.flightsData.total=arr.length;
-            }
-            // this.dataList=this.flightsData.flights.slice(
-            //     (this.pageIndex-1)*this.pageSize,
-            //     this.pageIndex*this.pageSize
-            // )
+                this.total=arr.length;
+                this.pageIndex=1;       
         },
         handleSizeChange(val) {
             this.pageSize=val
@@ -144,9 +141,10 @@ export default {
             this.cacheFlightsData={...res.data}
             //第一页的数据
             // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
-            console.log(res.data)
+            // console.log(res.data)
             //请求完毕
             this.loading=false;
+            this.total=this.flightsData.total
         })
     }
 }
