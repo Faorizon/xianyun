@@ -5,8 +5,13 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
+                <!-- flightsData是不会被修改的列表数据 -->
+                <!-- setDataList用于修改过滤后的数组列表 -->
                 <div>
-                    <FlightsFilters :flightsData="flightsData"/>
+                    <FlightsFilters 
+                    :data="flightsData"
+                    @setDataList="setDataList"
+                    />
                 </div>
                 
                 <!-- 航班头部布局 -->
@@ -69,6 +74,12 @@ export default {
                 info:{},
                 options:{}
             },
+            //缓存一份数据，只会修改一次
+            cacheFlightsData:{
+                flights:[],
+                info:{},
+                options:{}
+            },
 
             //从flights总列表数据中切割出来数组列表
             // dataList:[],
@@ -91,6 +102,20 @@ export default {
         }
     },
     methods:{
+        //设置dataList数据
+        //arr 是展示的新数据，该方法将会传递给过滤组件使用
+        setDataList(arr){
+            //如果数据从第一页开始显示
+            if(arr){
+                this.pageIndex=1;
+                this.flightsData.flights=arr;
+                this.flightsData.total=arr.length;
+            }
+            // this.dataList=this.flightsData.flights.slice(
+            //     (this.pageIndex-1)*this.pageSize,
+            //     this.pageIndex*this.pageSize
+            // )
+        },
         handleSizeChange(val) {
             this.pageSize=val
             //重新回到第一页
@@ -116,6 +141,7 @@ export default {
             //保存到机票的总数据
             this.flightsData=res.data
 
+            this.cacheFlightsData={...res.data}
             //第一页的数据
             // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
             console.log(res.data)
