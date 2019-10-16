@@ -48,6 +48,7 @@
             <!-- 侧边栏 -->
             <div class="aside">
                 <!-- 侧边栏组件 -->
+                <FlightsAside/>
             </div>
         </el-row>
     </section>
@@ -59,11 +60,13 @@ import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead.vue"
 import FlightsItem from "@/components/air/flightsItem.vue"
 import FlightsFilters from "@/components/air/flightsFilters.vue"
+import FlightsAside from "@/components/air/flightsAside.vue"
 export default {
     components:{
         FlightsListHead,
         FlightsItem,
-        FlightsFilters
+        FlightsFilters,
+        FlightsAside
     },
     data(){
         return {
@@ -103,7 +106,35 @@ export default {
             return arr;
         }
     },
+    watch:{
+        //监听路由
+        $route(){
+            //请求机票列表数据
+            this.getList()
+        }
+    },
     methods:{
+        //获取机票列表数据
+        getList(){
+             //请求机票列表数据
+            this.$axios({
+                url:"airs",
+                //params是axios的get参数
+                params:this.$route.query
+            }).then(res=>{
+                //保存到机票的总数据
+                this.flightsData=res.data
+
+                this.cacheFlightsData={...res.data}
+                //第一页的数据
+                // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
+                // console.log(res.data)
+                //请求完毕
+                this.loading=false;
+                this.total=this.flightsData.total
+            })
+        },
+
         //设置dataList数据
         //arr 是展示的新数据，该方法将会传递给过滤组件使用
         setDataList(arr){
@@ -129,23 +160,7 @@ export default {
         }
     },
     mounted(){
-        //请求机票列表数据
-        this.$axios({
-            url:"airs",
-            //params是axios的get参数
-            params:this.$route.query
-        }).then(res=>{
-            //保存到机票的总数据
-            this.flightsData=res.data
-
-            this.cacheFlightsData={...res.data}
-            //第一页的数据
-            // this.dataList=this.flightsData.flights.slice(0,this.pageSize)
-            // console.log(res.data)
-            //请求完毕
-            this.loading=false;
-            this.total=this.flightsData.total
-        })
+       this.getList()
     }
 }
 </script>
