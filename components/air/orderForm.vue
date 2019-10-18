@@ -165,7 +165,9 @@ export default {
                     Authorization:`Bearer ${this.$store.state.user.userInfo.token}`
                 }
             }).then(res=>{
-                console.log(res)
+                if(res.status===200){
+                    this.$message.success("提交订单成功")
+                }
             })
         }
     },
@@ -180,6 +182,8 @@ export default {
         }).then(res=>{
             // console.log(res)
             this.detail=res.data
+            //把detail返回给父组件
+            this.$emit("getDetail",this.detail)
         })
     }
 }
