@@ -22,10 +22,10 @@
 
         <div class="history">
             <h5>历史查询</h5>
-            <nuxt-link to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
-            v-for="(item,index) in $store.state.air.history"
-            :key="index"
-            >
+
+            <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
+            v-for="(item, index) in $store.state.air.history"
+            :key="index">
                 <el-row type="flex" 
                 justify="space-between" 
                 align="middle"
@@ -37,20 +37,19 @@
                     <span>选择</span>
                 </el-row>
             </nuxt-link>
+
         </div>
     </div>
 </template>
 
 <script>
 export default {
-
 }
 </script>
 
 <style scoped lang="less">
 .statement{
     border:1px #ddd solid;
-
     .statement-list{
         padding: 10px 0;
         > div{
@@ -72,37 +71,30 @@ export default {
         font-size: 14px;
     }
 }
-
 .history{
     border:1px #ddd solid;
     padding:10px;
     margin-top:10px;
-
     h5{
         font-size: 16px;
         font-weight: normal;
         padding-bottom: 10px;
         border-bottom:1px #eee solid;
     }
-
     .history-item{
         padding:10px 0;
         font-size: 14px;
         border-bottom: 1px #eee solid;
-
         &:last-child{
             border:none;
         }
-
         .to-from{
             margin-bottom: 5px;
         }
-
         p{
             font-size: 12px;
             color:#666;
         }
-
         span{
             color:#fff;
             display: block;
@@ -114,4 +106,4 @@ export default {
         }
     }
 }
-</style>
+</style> 
