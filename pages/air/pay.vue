@@ -14,8 +14,8 @@
                     <div class="qrcode">
 
                         <!-- 二维码 -->
-                        <!-- <canvas id="qrcode-stage"></canvas> -->
-                        <div id="qrcode"></div>
+                        <canvas id="qrcode-stage"></canvas>
+                        <!-- <div id="qrcode"></div> -->
 
                         <p>请使用微信扫一扫</p>
                         <p>扫描二维码支付</p>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import QRCode from 'qrcode'
 export default {
     data(){
         return {
@@ -50,8 +51,14 @@ export default {
                 }
             }).then(res => {
                 this.order = res.data;
-                console.log(this.order)
-                new QRCode(document.getElementById("qrcode"),this.order.payInfo.code_url);
+                // console.log(this.order)
+                
+                // new QRCode(document.getElementById("qrcode"),this.order.payInfo.code_url);
+                //获取canvas元素
+                const canvas=document.querySelector("#qrcode-stage");
+                QRCode.toCanvas(canvas,this.order.payInfo.code_url,{
+                    width:200
+                })
             })
         },10)
         
