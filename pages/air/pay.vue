@@ -35,7 +35,8 @@ export default {
     data(){
         return {
             // 订单详情
-            order: {}
+            order: {},
+            timer:null
         }
     },
     mounted(){
@@ -43,25 +44,47 @@ export default {
         const {id} = this.$route.query;
         // 请求订单详情
         //等待本地的插件把本地存储的值赋给store之后再执行请求，才可以拿到token
-        setTimeout(()=>{
-            this.$axios({
+        setTimeout(async ()=>{
+            const res= await this.$axios({
                 url: "/airorders/" + id,
                 headers: {
                     Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
                 }
-            }).then(res => {
-                this.order = res.data;
-                // console.log(this.order)
-                
-                // new QRCode(document.getElementById("qrcode"),this.order.payInfo.code_url);
-                //获取canvas元素
-                const canvas=document.querySelector("#qrcode-stage");
-                QRCode.toCanvas(canvas,this.order.payInfo.code_url,{
-                    width:200
-                })
             })
+            this.order=res.data
+                
+            // new QRCode(document.getElementById("qrcode"),this.order.payInfo.code_url);
+            //获取canvas元素
+            const canvas=document.querySelector("#qrcode-stage");
+            QRCode.toCanvas(canvas,this.order.payInfo.code_url,{
+            width:200})
+            //查询付款状况
+            this.timer=setInterval(async ()=>{
+                const res=await this.$axios({
+                    url:"/airorders/checkpay",
+                    method:'post',
+                    headers: {
+                        Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+                    },
+                    data:{
+                        id:this.$route.query.id,
+                        nonce_str:this.order.price,
+                        out_trade_no:this.order.orderNo
+                    }
+                })
+                //获取支付状态
+                const {statusTxt}=res.data;
+                //支付完成之后判断
+                if(statusTxt==="支付完成"){
+                    this.$message.success(statusTxt)
+                    clearInterval(this.timer);
+                }
+            },3000)
         },10)
-        
+    },
+    //组件销毁时使用的，一般情况下用于清楚定时器
+    destroyed(){
+        clearInterval(this.timer)
     }
 }
 </script>
