@@ -188,7 +188,7 @@ export default {
                 }
             }).then(res=>{
                     const {data,message} = res.data;
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.$message.success(message)
                     //  跳转到付款页
                     this.$router.push({
@@ -210,7 +210,7 @@ export default {
             }
         }).then(res=>{
             this.detail=res.data
-            console.log(this.detail)
+            // console.log(this.detail)
             //把detail返回给父组件
             this.$emit("getDetail",this.detail)
         })
