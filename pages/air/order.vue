@@ -3,11 +3,11 @@
         <el-row type="flex" justify="space-between">
             <!-- 订单表单 -->
             <div class="main">
-                <OrderForm @getDetail="getDetail"/>
+                <OrderForm @getDetail="getDetail" @getAllPrice="getAllPrice"/>
             </div>
 
             <!-- 侧边栏 -->
-            <OrderAside :data="detail"/>
+            <OrderAside :data="detail" :allPrice="allPrice"/>
         </el-row>
     </div>
 </template>
@@ -21,7 +21,9 @@ export default {
             detail:{
                 //默认值
                 seat_infos:{}
-            }
+            },
+            // 总价格
+            allPrice:0
         }
     },
     components:{
@@ -32,6 +34,10 @@ export default {
         //获取机票详情的方法
         getDetail(detail){
             this.detail=detail;
+        },
+        //修改总价格
+        getAllPrice(price){
+            this.allPrice=price
         }
     }
 }
