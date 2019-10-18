@@ -105,9 +105,21 @@ export default {
     computed:{
         //计算总价格
         allPrice(){
+            if(!this.detail.seat_infos) return;
+            //总价格
+            let price=0;
+            //加上单价
+            price += this.detail.seat_infos.org_settle_price;
+            //燃油费
+            price += this.detail.airport_tax_audlet;
+            //保险
+            price += this.insurances.length * 30;
+            //人数
+            price *= this.users.length;
             // 把总价格传递给父组件
-            this.$emit("getAllPrice",2);
-            return 2;
+            this.$emit("getAllPrice",price);
+
+            return price;
         }
     },
     methods: {
@@ -175,10 +187,17 @@ export default {
                     Authorization:`Bearer ${this.$store.state.user.userInfo.token}`
                 }
             }).then(res=>{
-                if(res.status===200){
-                    this.$message.success("提交订单成功")
-                }
-            })
+                    const {data,message} = res.data;
+                    console.log(res.data)
+                    this.$message.success(message)
+                    //  跳转到付款页
+                    this.$router.push({
+                        path:"/air/pay",
+                        query:{
+                            id:data.id
+                        }
+                    })
+                })
         }
     },
     mounted(){
@@ -190,8 +209,8 @@ export default {
                 seat_xid
             }
         }).then(res=>{
-            // console.log(res)
             this.detail=res.data
+            console.log(this.detail)
             //把detail返回给父组件
             this.$emit("getDetail",this.detail)
         })
