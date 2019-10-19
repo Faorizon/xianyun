@@ -1,26 +1,31 @@
 <template>
-    <div style="padding:50px;">
-        高德地图
-        <div id="container"></div> 
+    <div class="container">
+        <!-- 面包屑 -->
+        <el-breadcrumb separator=">" class="crumbs">
+            <el-breadcrumb-item>酒店</el-breadcrumb-item>
+            <el-breadcrumb-item>南京酒店预订</el-breadcrumb-item>
+        </el-breadcrumb>
+        <!-- 酒店查询 -->
+        <SearchForm/>
     </div>
 </template>
 
 <script>
-
+import SearchForm from "@/components/hotel/searchForm"
 export default {
-    mounted(){
-        window.onLoad  = function(){
-            var map = new AMap.Map('container');
-        }
-        var url = 'https://webapi.amap.com/maps?v=1.4.15&key=5d7329a6de1940ae225c998fa7e59ba0&callback=onLoad';
-        var jsapi = document.createElement('script');
-        jsapi.charset = 'utf-8';
-        jsapi.src = url;
-        document.head.appendChild(jsapi);
+    components:{
+        SearchForm
     }
 }
-</script scoped>
-    
-<style>
-    #container {width:300px; height: 180px; }  
+</script>
+
+<style scoped lang="less">
+.container{
+    width:1000px;
+    margin:0 auto;
+    .crumbs{
+        padding:20px 0;
+    }
+}
+
 </style>
