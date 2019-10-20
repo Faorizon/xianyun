@@ -1,10 +1,14 @@
 <template>
-    <div>
+    <div class="container">
+        <!-- 面包屑 -->
+        <el-breadcrumb separator=">" class="crumbs">
+            <el-breadcrumb-item>酒店</el-breadcrumb-item>
+            <el-breadcrumb-item>南京酒店预订</el-breadcrumb-item>
+        </el-breadcrumb>
         <!-- 酒店查询 -->
         <el-form :inline="true" :model="formData" class="demo-form-inline">
-            <el-row type="flex" class="row-bg" justify="space-around">
                 <!-- 目的地 -->
-                <el-col :span="8">
+                <el-form-item>
                     <el-autocomplete
                     class="inline-input inquire"
                     v-model="formData.name_contains"
@@ -13,10 +17,32 @@
                     @select="handleDestSelect"
                     @blur="handleBlur"
                     ></el-autocomplete>
-                </el-col>
-                <el-col :span="8"><div class="grid-content bg-purple-light"></div></el-col>
-                <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
-            </el-row>
+                </el-form-item>
+                <!-- 入住与离店日期 -->
+                <el-form-item>
+                    <el-date-picker
+                    v-model="formData.enterTime"
+                    type="daterange"
+                    range-separator="-"
+                    start-placeholder="入住日期"
+                    end-placeholder="离店日期">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                    <el-input 
+                    v-model="formData.person" 
+                    placeholder="人数未定"
+                    v-popover:popover2>
+                    </el-input>
+                    <el-popover
+                        ref="popover2"
+                        placement="bottom"
+                        title="标题"
+                        width="200"
+                        trigger="click"
+                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                    </el-popover>
+                </el-form-item>
             <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
@@ -29,7 +55,9 @@ export default {
     data(){
         return{
             formData:{
-                name_contains:"",
+                name_contains:"",//目的地
+                enterTime:"",//入店时间
+                person:"",//人数
             }
         }
     },
@@ -88,5 +116,11 @@ export default {
 </script>
 
 <style scoped lang="less">
-
+.container{
+    width:1000px;
+    margin:0 auto;
+    .crumbs{
+        padding:20px 0;
+    }
+}
 </style>
