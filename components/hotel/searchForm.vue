@@ -83,8 +83,35 @@
                             </span>
                         </span>                      
                     </div>
-                    <a href="#" @click="clickShow" v-if="!isShow" class="showArea">展开</a>
-                    <a href="#" @click="clickShow" v-if="isShow"  class="showArea">收起</a> 
+                    <a href="#" @click="clickShow" v-if="!isShow" class="showArea">
+                        <span class="iconfont el-icon-arrow-down"></span>
+                    </a>
+                    <a href="#" @click="clickShow" v-if="isShow"  class="showArea">
+                        <span class="iconfont el-icon-arrow-up"></span>
+                    </a> 
+                    <!-- 攻略 -->
+                    <div class="strategy">
+                        <span class="strategyLogo">攻略: &nbsp;&nbsp;</span>
+                        <span class="content">
+                            北京，你想要的都能在这找到。博古通今，兼容并蓄，天下一城，如是帝都。 景点以故宫为中心向四处辐射；地铁便宜通畅，而且覆盖绝大多数景点。 由于早上有天安门升旗仪式，所以大多数人选择在天安门附近住宿。
+                        </span>
+                    </div>
+                    <!-- 均价 -->
+                    <el-tooltip class="item" effect="dark" content="等级评定是针对房价,设施和服务等各方面水平的综合评估" placement="top">
+                    <div class="price">均价 &nbsp;&nbsp;:
+                        <span class="wenhaoSytle">?</span>&nbsp;&nbsp;
+                        <i class="iconfont iconhuangguan"></i>
+                        <i class="iconfont iconhuangguan"></i>
+                        <i class="iconfont iconhuangguan"></i>¥332
+                        &nbsp;
+                        <i class="iconfont iconhuangguan"></i>
+                        <i class="iconfont iconhuangguan"></i>¥521
+                        &nbsp;
+                        <i class="iconfont iconhuangguan"></i>
+                        <i class="iconfont iconhuangguan"></i>
+                        <i class="iconfont iconhuangguan"></i>¥768
+                    </div>
+                    </el-tooltip>
                 </div>
             </el-col>
         </el-row>
@@ -232,22 +259,22 @@ export default {
     }
     .gonglve{
         .area{
-        height: 40px;
-        overflow: hidden;
-            .areaLogo{
-                float: left;
-            }
-            .content{
-                display: inline-block;
-                width: 500px;
-                height:40px;
-                font-size: 14px;
-                .item-name {
-                    margin:0 5px;
-                    &:hover {
-                        text-decoration: underline;
-                        color: #0099ff;
-                    }
+            height: 40px;
+            overflow: hidden;   
+        }
+        .areaLogo,.strategyLogo{
+            float: left;
+        }
+        .content{
+            display: inline-block;
+            width: 500px;
+            height:40px;
+            font-size: 14px;
+            .item-name {
+                margin-right: 10px;
+                &:hover {
+                    text-decoration: underline;
+                    color: #0099ff;
                 }
             }
         }
@@ -257,8 +284,30 @@ export default {
             text-decoration: underline;
             font-size: 14px;
         }
-        
+        .price{
+            position: relative;
+            .wenhaoSytle {
+                margin-top: 20px;
+                background: #ccc;
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                line-height: 10px;
+                font-size: 10px;
+                padding: 2px;
+                border-radius: 50%;
+                text-align: center;
+                position: absolute;
+                top: -20px;
+                left: 30px;
+                
+            }
+            .iconhuangguan {
+                color: #ff9900;
+            }
+        }
     }
+
     
 }
 </style>
