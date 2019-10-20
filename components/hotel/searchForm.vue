@@ -28,25 +28,66 @@
                     end-placeholder="离店日期">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item class="inpPeople">
                     <el-input 
                     v-model="formData.person" 
                     placeholder="人数未定"
                     v-popover:popover2>
                     </el-input>
                     <el-popover
-                        ref="popover2"
-                        placement="bottom"
-                        title="标题"
-                        width="200"
-                        trigger="click"
-                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                    ref="popover2"
+                    placement="bottom"
+                    title="请选择入住人数"
+                    width="300"
+                    trigger="click"
+                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
+                    class="numberPeople"
+                    >
+                        <span style="margin-right:20px;">每间</span>
+                        <el-select v-model="value1" placeholder="成人" style="width:100px;">
+                            <el-option
+                            v-for="item in options1"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="value2" placeholder="儿童" style="width:100px;">
+                            <el-option
+                            v-for="item in options2"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <div class="clearfix">
+                            <span class="line"></span>
+                            <el-button type="primary" class="confirm">确定</el-button>
+                        </div>
                     </el-popover>
                 </el-form-item>
             <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
         </el-form>
+        <!-- 简介 -->
+        <el-row>
+            <el-col :span="14">
+                <div class="gonglve">
+                    <!-- 区域 -->
+                    <div class="area" ref="area">
+                        <span class="areaLogo">区域：&nbsp;&nbsp;</span>
+                        <span class="content">
+                            <span v-for="(item,index) in this.city" :key="index">
+                                <a href="#" class="item-name">{{item.name}}</a>
+                            </span>
+                        </span>                      
+                    </div>
+                    <a href="#" @click="clickShow" v-if="!isShow" class="showArea">展开</a>
+                    <a href="#" @click="clickShow" v-if="isShow"  class="showArea">收起</a> 
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -54,11 +95,48 @@
 export default {
     data(){
         return{
+            isShow:false,//展开和收起
+            city:[],//放所有地点的数组
             formData:{
                 name_contains:"",//目的地
                 enterTime:"",//入店时间
                 person:"",//人数
-            }
+            },
+            //成人人数选择
+            options1: [{
+                value: '选项1',
+                label: '1'
+                }, {
+                value: '选项2',
+                label: '2'
+                }, {
+                value: '选项3',
+                label: '3'
+                }, {
+                value: '选项4',
+                label: '4'
+                }, {
+                value: '选项5',
+                label: '5'
+            }],
+            options2: [{
+                value: '选项1',
+                label: '1'
+                }, {
+                value: '选项2',
+                label: '2'
+                }, {
+                value: '选项3',
+                label: '3'
+                }, {
+                value: '选项4',
+                label: '4'
+                }, {
+                value: '选项5',
+                label: '5'
+            }],
+            value1: '',
+            value2:'',
         }
     },
     methods:{
@@ -109,8 +187,26 @@ export default {
         //选择推荐选项
         handleDestSelect(){
             console.log("选中推荐选项触发")
+        },
+        //区域部分超出的展示和隐藏
+        clickShow(){
+            this.isShow= !this.isShow;
+            if(this.isShow){
+                this.$refs.area.style.height="130px"
+
+            }else{
+                this.$refs.area.style.height="40px"
+            }
         }
 
+    },
+    mounted(){
+        //获取城市区域所有列表
+        this.$axios({
+            url:"/cities?name=南京"
+        }).then(res=>{
+            this.city=res.data.data[0].scenics;
+        })
     }
 }
 </script>
@@ -122,5 +218,47 @@ export default {
     .crumbs{
         padding:20px 0;
     }
+    .line{
+       display:block;
+       width: 100%;
+       border-bottom:1px solid #000; 
+       padding:5px 0 10px;
+       margin-top: 5px;
+    }
+    .confirm{
+        float: right;
+        height: 30px;
+        line-height: 8px;
+    }
+    .gonglve{
+        .area{
+        height: 40px;
+        overflow: hidden;
+            .areaLogo{
+                float: left;
+            }
+            .content{
+                display: inline-block;
+                width: 500px;
+                height:40px;
+                font-size: 14px;
+                .item-name {
+                    margin:0 5px;
+                    &:hover {
+                        text-decoration: underline;
+                        color: #0099ff;
+                    }
+                }
+            }
+        }
+        .showArea{
+            margin-left: 53px;
+            color:#00a4ff;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+        
+    }
+    
 }
 </style>
