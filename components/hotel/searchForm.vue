@@ -32,6 +32,7 @@
                     <el-input 
                     v-model="formData.person" 
                     placeholder="人数未定"
+                    suffix-icon="el-icon-edit-outline"
                     v-popover:popover2>
                     </el-input>
                     <el-popover
@@ -52,12 +53,13 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select v-model="value2" placeholder="儿童" style="width:100px;">
+                        <el-select v-model="value2" placeholder="儿童" style="width:100px;height:10px">
                             <el-option
                             v-for="item in options2"
                             :key="item.value"
                             :label="item.label"
-                            :value="item.value">
+                            :value="item.value"
+                            >
                             </el-option>
                         </el-select>
                         <div class="clearfix">
