@@ -14,7 +14,7 @@
                     v-model="formData.name_contains"
                     :fetch-suggestions="queryDestSearch"
                     placeholder="目的地"
-                    @select="handleDestSelect"
+                    @change="handleDestSelect"
                     @blur="handleBlur"
                     ></el-autocomplete>
                 </el-form-item>
@@ -42,11 +42,10 @@
                     title="请选择入住人数"
                     width="300"
                     trigger="click"
-                    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
                     class="numberPeople"
                     >
                         <span>每间</span>
-                        <el-select v-model="value1" placeholder="成人" style="width:85px;" @change="handlePeople">
+                        <el-select v-model="value1" placeholder="成人" style="width:85px;">
                             <el-option
                             v-for="item in options1"
                             :key="item.value"
@@ -54,7 +53,7 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select v-model="value2" placeholder="儿童" style="width:85px" @change="handleChildren">
+                        <el-select v-model="value2" placeholder="儿童" style="width:85px">
                             <el-option
                             v-for="item in options2"
                             :key="item.value"
@@ -127,6 +126,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
     data(){
         return{
@@ -134,6 +134,7 @@ export default {
             city:[],//放所有地点的数组
             formData:{
                 name_contains:"",//目的地
+                destCode:"",//目的城市码
                 enterTime:"",//入店时间
                 person:"",//人数
             },
@@ -151,8 +152,8 @@ export default {
                 value: '4',
                 label: '4成人'
                 }, {
-                value: '5成人',
-                label: '5'
+                value: '5',
+                label: '5成人'
             }],
             options2: [{
                 value: '0',
@@ -172,6 +173,7 @@ export default {
             }],
             value1: '',//成人
             value2:'',//儿童
+            cities:[],//存放收缩框搜索出来的城市
         }
     },
     methods:{
@@ -188,42 +190,29 @@ export default {
         // cb:回调函数，必须要调用，调用时候必须要传递一个数组的参数，
         // 数组中的元素必须是一个对象，对象中必须要有value属性
         queryDestSearch(value, cb){
-            // 判断 输入框为空 时候不请求
-            if(!value) {
-                cb([]);  // 传入 空列表数据
-                return;  // 返回
+        //    console.log(value)
+        //    console.log(this.formData.name_contains)
+            if(!value){
+                cb([]);
+                return;
             };
-            
-            // 请求 搜索建议城市 数据
             this.$axios({
-                url: "/airs/city?name=" + value  // 请求 数据接口
-            }).then(res => {
-                // data 是后台返回的城市数组,没有 value 属性
-                const {data} = res.data;
-
-                // 循环 给每一项添加 value 属性
-                const newData = data.map(v => {
-                    v.value = v.name.replace("市", ""); // 将搜索城 “市” 去掉
-                    return v; // 返回 每一项数据
-                });
-
-                // 把 newData 赋值给 data中cities
-                this.cities = newData;
-
-                // 展示到下拉列表
-                cb(newData)
-                //获取城市区域所有列表
-                this.$axios({
-                    url:"/cities?name="+this.
-                }).then(res=>{
-                    this.city=res.data.data[0].scenics;
+                url:"/airs/city?name="+value
+            }).then(res=>{
+                const {data}=res.data
+                const newData=data.map(v=>{
+                    v.value=v.name.replace("市","")
+                    return v;
                 })
+                this.cities=newData
+                cb(newData)
             })
         },
         //出发城市失去焦点的时候默认选中第一个
         handleBlur(){
-            //判断 如果没有列表数据就返回
-            console.log("失去焦点")
+            if(this.cities.length===0) return;
+            this.formData.name_contains=this.cities[0].value;
+            this.formData.destCode=this.cities[0].sort
         },
         //选择推荐选项
         handleDestSelect(){
@@ -231,19 +220,13 @@ export default {
         },
         //选择日期后触发
         handleDate(){
-            console.log(this.formData.enterTime)
+            const timer=moment(this.formData.enterTime[0]).format(`YYYY-MM-DD`)
+            console.log(timer)
         },
-        //选择成年人
-        handlePeople(){
-            console.log(this.value1)
-        },
-        //选择儿童
-        handleChildren(){
-            console.log(this.value2)
-        },
-        //人数确定后点击确定触发
-        handleConfirm(){
-            console.log("选择人数成功")
+        handleConfirm(){            
+            this.$refs.popover2.$refs.popper.hidden=true;
+            console.log(this.value1,this.value2)
+            this.formData.person=`${this.value1}成人 ${this.value2}儿童`
         },
         //区域部分超出的展示和隐藏
         clickShow(){
