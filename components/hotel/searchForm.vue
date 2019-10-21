@@ -22,6 +22,7 @@
                 <el-form-item>
                     <el-date-picker
                     v-model="formData.enterTime"
+                    @change="handleDate"
                     type="daterange"
                     range-separator="-"
                     start-placeholder="入住日期"
@@ -44,8 +45,8 @@
                     content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。"
                     class="numberPeople"
                     >
-                        <span style="margin-right:20px;">每间</span>
-                        <el-select v-model="value1" placeholder="成人" style="width:100px;">
+                        <span>每间</span>
+                        <el-select v-model="value1" placeholder="成人" style="width:85px;" @change="handlePeople">
                             <el-option
                             v-for="item in options1"
                             :key="item.value"
@@ -53,7 +54,7 @@
                             :value="item.value">
                             </el-option>
                         </el-select>
-                        <el-select v-model="value2" placeholder="儿童" style="width:100px;height:10px">
+                        <el-select v-model="value2" placeholder="儿童" style="width:85px" @change="handleChildren">
                             <el-option
                             v-for="item in options2"
                             :key="item.value"
@@ -62,10 +63,7 @@
                             >
                             </el-option>
                         </el-select>
-                        <div class="clearfix">
-                            <span class="line"></span>
-                            <el-button type="primary" class="confirm">确定</el-button>
-                        </div>
+                        <el-button type="primary" class="confirm" @click="handleConfirm">确定</el-button>
                     </el-popover>
                 </el-form-item>
             <el-form-item>
@@ -116,6 +114,14 @@
                     </el-tooltip>
                 </div>
             </el-col>
+            <el-col :span="10">
+                <div class="grid-content bg-purple-light">
+                    <div id="container"></div>
+                </div>
+            </el-col>
+            <el-col :span="10">
+                <div id="map"></div> 
+            </el-col>
         </el-row>
     </div>
 </template>
@@ -133,39 +139,39 @@ export default {
             },
             //成人人数选择
             options1: [{
-                value: '选项1',
-                label: '1'
+                value: '1',
+                label: '1成人'
                 }, {
-                value: '选项2',
-                label: '2'
+                value: '2',
+                label: '2成人'
                 }, {
-                value: '选项3',
-                label: '3'
+                value: '3',
+                label: '3成人'
                 }, {
-                value: '选项4',
-                label: '4'
+                value: '4',
+                label: '4成人'
                 }, {
-                value: '选项5',
+                value: '5成人',
                 label: '5'
             }],
             options2: [{
-                value: '选项1',
-                label: '1'
+                value: '0',
+                label: '0儿童'
                 }, {
-                value: '选项2',
-                label: '2'
+                value: '1',
+                label: '1儿童'
                 }, {
-                value: '选项3',
-                label: '3'
+                value: '2',
+                label: '2儿童'
                 }, {
-                value: '选项4',
-                label: '4'
+                value: '3',
+                label: '3儿童'
                 }, {
-                value: '选项5',
-                label: '5'
+                value: '4',
+                label: '4儿童'
             }],
-            value1: '',
-            value2:'',
+            value1: '',//成人
+            value2:'',//儿童
         }
     },
     methods:{
@@ -206,6 +212,12 @@ export default {
 
                 // 展示到下拉列表
                 cb(newData)
+                //获取城市区域所有列表
+                this.$axios({
+                    url:"/cities?name="+this.
+                }).then(res=>{
+                    this.city=res.data.data[0].scenics;
+                })
             })
         },
         //出发城市失去焦点的时候默认选中第一个
@@ -216,6 +228,22 @@ export default {
         //选择推荐选项
         handleDestSelect(){
             console.log("选中推荐选项触发")
+        },
+        //选择日期后触发
+        handleDate(){
+            console.log(this.formData.enterTime)
+        },
+        //选择成年人
+        handlePeople(){
+            console.log(this.value1)
+        },
+        //选择儿童
+        handleChildren(){
+            console.log(this.value2)
+        },
+        //人数确定后点击确定触发
+        handleConfirm(){
+            console.log("选择人数成功")
         },
         //区域部分超出的展示和隐藏
         clickShow(){
@@ -236,14 +264,24 @@ export default {
         }).then(res=>{
             this.city=res.data.data[0].scenics;
         })
+        window.onLoad  = function(){
+            var map = new AMap.Map('map', {
+            zoom:11,//级别
+            center: [116.397428, 39.90923],//中心点坐标
+            viewMode:'3D'//使用3D视图
+        });
+        }
+        var url = 'https://webapi.amap.com/maps?v=1.4.15&key=5d7329a6de1940ae225c998fa7e59ba0&callback=onLoad';
+        var jsapi = document.createElement('script');
+        jsapi.charset = 'utf-8';
+        jsapi.src = url;
+        document.head.appendChild(jsapi);
     }
 }
 </script>
 
 <style scoped lang="less">
 .container{
-    width:1000px;
-    margin:0 auto;
     .crumbs{
         padding:20px 0;
     }
@@ -312,4 +350,5 @@ export default {
 
     
 }
+#map {width:400px; height: 280px; }
 </style>
