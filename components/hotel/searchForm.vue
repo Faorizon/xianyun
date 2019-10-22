@@ -177,6 +177,7 @@ export default {
             time:"",//入住与离店时间
             cities:[],//存放收缩框搜索出来的城市
             hotelList:[],//存放酒店列表
+            position:[113.3245904, 23.1066805]//存放坐标
         }
     },
     methods:{
@@ -193,6 +194,10 @@ export default {
                 const {data} = res.data
                 //将数据保存到store
                 this.$store.commit("hotel/setHotelList",data)
+                //将城市id保存到store
+                this.$store.commit("hotel/setCity",this.formData.city)
+                //将酒店总数存入store
+                this.$store.commit("hotel/setTotal",data.length)
             })
         },
         // 出发城市输入框值发生变化时候会触发
@@ -237,7 +242,7 @@ export default {
         },
         handleConfirm(){            
             this.$refs.popover2.$refs.popper.hidden=true;
-            console.log(this.value1,this.value2)
+            // console.log(this.value1,this.value2)
             this.formData.person=`${this.value1}成人 ${this.value2}儿童`;
             
         },
@@ -259,23 +264,31 @@ export default {
             url:"/cities?name=南京"
         }).then(res=>{
             const {data}=res.data
-            console.log(data)
+            // console.log(data)
             // console.log(data[0])
             this.city=data[0].scenics;
             this.formData.city=data[0].id
         })
+        
+        //地图加载
         window.onLoad  = function(){
-            var map = new AMap.Map('map', {
-            zoom:11,//级别
-            center: [116.397428, 39.90923],//中心点坐标
-            viewMode:'3D'//使用3D视图
-        });
+            var map = new AMap.Map('map',{
+                  zoom:14,//级别
+                  center: this.position,//中心点坐标
+                  viewMode:'3D'//使用3D视图
+            });
+
+
+            var marker = new AMap.Marker({
+                position:this.position//位置
+            })
+            map.add(marker);//添加到地图
         }
-        var url = 'https://webapi.amap.com/maps?v=1.4.15&key=5d7329a6de1940ae225c998fa7e59ba0&callback=onLoad';
-        var jsapi = document.createElement('script');
-        jsapi.charset = 'utf-8';
-        jsapi.src = url;
-        document.head.appendChild(jsapi);
+          var url = 'https://webapi.amap.com/maps?v=1.4.15&0bb89d19d60f6b6c21251c9751c72444 &callback=onLoad';
+          var jsapi = document.createElement('script');
+          jsapi.charset = 'utf-8';
+          jsapi.src = url;
+          document.head.appendChild(jsapi);
     }
 }
 </script>
