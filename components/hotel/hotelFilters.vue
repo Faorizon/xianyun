@@ -77,65 +77,51 @@
         </el-row>
         </div>
         <!-- 酒店列表 -->
-        <div class="hotelDetail">
+        <div class="hotelDetail" v-for="(item,index) in $store.state.hotel.hotelList" :key="index" >
             <el-row>
                 <el-col :span="8">
                     <div class="hotelImg">
-                        <img src="1.png" alt="">
+                        <img :src="item.photos" alt="">
                     </div>
                 </el-col>
                 <el-col :span="10">
                     <div class="hotelDescribe">
-                        <h1 class="hotelName">好来阁商务宾馆</h1>
+                        <h1 class="hotelName">{{item.name}}</h1>
                         <div class="hotelEn">
-                            hao lai ge shang wu hotel
+                            {{item.alias}}
                             <i class="iconfont iconhuangguan"></i>
                             <i class="iconfont iconhuangguan"></i>
                             <i class="iconfont iconhuangguan"></i>
-                            经济型
+                            {{item.hoteltype.name}}
                         </div>
                         <div class="evaluate">
                             <el-rate
-                            v-model="value5"
+                            :value5="item.stars"
+                            v-model="item.stars"
                             disabled
                             show-score
                             text-color="#ff9900"
                             score-template="{value}分">
                             </el-rate>
-                            <span class="commentNum">88条评价</span>
-                            <span class="postNum">100篇游记</span>
+                            <span class="commentNum"><span style="color:#ff9900;">{{item.all_remarks}}</span>条评价</span>
+                            <span class="postNum"><span style="color:#ff9900;">100</span>篇游记</span>
                         </div>
                         <div class="location">
                             <span class="iconfont el-icon-location"></span>
-                            <span>位于：高淳县淳溪镇镇兴路118号(高淳县委党校对面)</span>
+                            <span>位于：{{item.address}}</span>
                         </div>
                     </div>
                 </el-col>
                 <el-col :span="6">
                     <div class="hotelOther">
                         <ul>
-                            <li>
-                                <div class="otherName">携程</div>
+                            <li v-for="(product,index) in item.products" :key="index">
+                                <div class="otherName">{{product.name}}</div>
                                 <div>
-                                    <span class="price">￥53</span>起
+                                    <span class="price">￥{{product.price}}</span>起
                                     <span class="iconfont el-icon-arrow-right"></span>
                                 </div>
                             </li>
-                            <li>
-                                <div class="otherName">艺龙</div>
-                                <div>
-                                    <span class="price">￥53</span>起
-                                    <span class="iconfont el-icon-arrow-right"></span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="otherName">Hotels.com</div>
-                                <div>
-                                    <span class="price">￥53</span>起
-                                    <span class="iconfont el-icon-arrow-right"></span>
-                                </div>
-                            </li>
-                            
                         </ul>
                     </div>
                 </el-col>
@@ -160,6 +146,7 @@ export default {
         //选择价格时触发
         handlePrice(){
             console.log(this.value1)
+            console.log(this.$store.state.hotel.hotelList)
         },
         //选择星级触发
         handleStar(){
@@ -177,6 +164,9 @@ export default {
         handleBrand(){
             console.log("品牌选中触发")
         },
+    },
+    mounted(){
+        
     }
 }
 </script>
@@ -221,10 +211,10 @@ export default {
     .hotelDetail{
         padding:25px 0;
         width: 100%;
-        height: 500px;
+        border-bottom: 1px solid #ccc;
         .hotelImg{
             width:320px;
-            height: 265px;
+            height:265px;
             overflow: hidden;
             img{
                 display: block;

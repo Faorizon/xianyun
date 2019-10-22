@@ -21,7 +21,7 @@
                 <!-- 入住与离店日期 -->
                 <el-form-item>
                     <el-date-picker
-                    v-model="formData.enterTime"
+                    v-model="time"
                     @change="handleDate"
                     type="daterange"
                     range-separator="-"
@@ -133,9 +133,10 @@ export default {
             isShow:false,//展开和收起
             city:[],//放所有地点的数组
             formData:{
-                name_contains:"",//目的地
-                destCode:"",//目的城市码
+                name_contains:"",//目的城市名称
+                city:"",//目的城市id
                 enterTime:"",//入店时间
+                leftTime:"",//离店时间
                 person:"",//人数
             },
             //成人人数选择
@@ -173,7 +174,9 @@ export default {
             }],
             value1: '',//成人
             value2:'',//儿童
+            time:"",//入住与离店时间
             cities:[],//存放收缩框搜索出来的城市
+            hotelList:[],//存放酒店列表
         }
     },
     methods:{
@@ -183,7 +186,14 @@ export default {
         },
         //提交表单
         onSubmit() {
-            console.log('submit!');
+            this.$axios({
+                url:`/hotels?city=${this.formData.city}&enterTime=${this.formData.enterTime}&leftTime=${this.formData.leftTime}`
+            }).then(res=>{
+                console.log(res)
+                const {data} = res.data
+                //将数据保存到store
+                this.$store.commit("hotel/setHotelList",data)
+            })
         },
         // 出发城市输入框值发生变化时候会触发
         // value：输入框的值
@@ -220,13 +230,16 @@ export default {
         },
         //选择日期后触发
         handleDate(){
-            const timer=moment(this.formData.enterTime[0]).format(`YYYY-MM-DD`)
-            console.log(timer)
+            const timer1=moment(this.time[0]).format(`YYYY-MM-DD`)
+            const timer2=moment(this.time[1]).format(`YYYY-MM-DD`)
+            this.formData.enterTime=timer1;
+            this.formData.leftTime=timer2;
         },
         handleConfirm(){            
             this.$refs.popover2.$refs.popper.hidden=true;
             console.log(this.value1,this.value2)
-            this.formData.person=`${this.value1}成人 ${this.value2}儿童`
+            this.formData.person=`${this.value1}成人 ${this.value2}儿童`;
+            
         },
         //区域部分超出的展示和隐藏
         clickShow(){
@@ -245,7 +258,11 @@ export default {
         this.$axios({
             url:"/cities?name=南京"
         }).then(res=>{
-            this.city=res.data.data[0].scenics;
+            const {data}=res.data
+            console.log(data)
+            // console.log(data[0])
+            this.city=data[0].scenics;
+            this.formData.city=data[0].id
         })
         window.onLoad  = function(){
             var map = new AMap.Map('map', {
