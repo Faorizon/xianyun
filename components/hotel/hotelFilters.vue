@@ -221,7 +221,7 @@ export default {
         //选择星级触发
         handleStar(){
             // console.log("星级选中触发")
-            // console.log(this.form.star)
+            console.log(this.form.star)
         },
         //选择类型触发
         handleType(){

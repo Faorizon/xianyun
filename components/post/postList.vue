@@ -1,75 +1,85 @@
 <template>
     <div class="post-list">
-        <ul>
-            <li>
-                <el-row type="flex">
-                    <div class="post-left">
-                        <a href="#">
-                            <img src="1.png" alt="" class="post-img">
-                        </a>
-                    </div>
-                    <div class="post-right">
-                        <div class="post-title">
-                            <a href="#">
-                                啊啊啊啊啊
-                            </a>
+        <div  v-for="(item,index) in data" :key="index">
+            <ul>
+                <li v-if="item.images.length<2">
+                    <el-row type="flex" >
+                        <div class="post-left">
+                            <nuxt-link :to="`/post/detail?id=${item.id}`">
+                                <img :src="`${item.images[0]}`" alt="" class="post-img">
+                            </nuxt-link>
                         </div>
-                        <div class="post-content">
-                            <a href="#">
-                                这是文章内容
-                            </a>
-                        </div>
-                        <el-row type="flex" align="middle" class="post-info" justify="space-between">
-                            <div>   
-                                <span class="location"><i class="iconfont el-icon-location-outline"></i>北京市</span>
-                                <span>by</span>
-                                <span class="userInfo">
-                                    <a href="#">
-                                        <img src="1.png" alt="" class="userImg">
-                                        <span class="userName">地球发动机</span>
-                                    </a>
-                                </span>
-                                <span class="viewCount"><i class="iconfont el-icon-view"></i>63</span>
+                        <div class="post-right">
+                            <div class="post-title">
+                                <nuxt-link :to="`/post/detail?id=${item.id}`">
+                                    {{item.title}}
+                                </nuxt-link>
                             </div>
-                            <span class="like">3点赞</span>
-                        </el-row>
-                    </div> 
-                </el-row>
-                
-            </li>
-        </ul>
-        <div class="three">
-            <div class="post-title">
-                塞班贵？一定是你打开的方式不对！6000块玩转塞班
-            </div>
-            <div class="post-content">
-                大家对塞班岛总存在着这样的误解，知道它是美属地盘，就理所当然地觉得这里的花费一定很高，花费高有高的玩法，那如果只有6000块的预算呢？要怎么玩？关于旅行这件事，我们要让钱花得更有道理，收下这份攻略，带你6000块花式玩转塞班。图：塞班岛。 by第5季旅游一、怎样用6000块玩转塞班？大多数出境游客人不做预算或最
-            </div>
-            <el-row type="flex" justify="space-between" class="post-pic" :gutter="20">
-                <el-col :span="8">
-                    <img src="1.png" alt="" class="post-img">
-                </el-col>
-            </el-row>
-            <el-row type="flex" align="middle" class="post-info" justify="space-between" style="width:100%;">
-                <div>   
-                    <span class="location"><i class="iconfont el-icon-location-outline"></i>北京市</span>
-                    <span>by</span>
-                    <span class="userInfo">
-                        <a href="#">
-                            <img src="1.png" alt="" class="userImg">
-                            <span class="userName">地球发动机</span>
-                        </a>
-                    </span>
-                    <span class="viewCount"><i class="iconfont el-icon-view"></i>63</span>
+                            <div class="post-content">
+                                <nuxt-link :to="`/post/detail?id=${item.id}`">
+                                    {{item.summary}}
+                                </nuxt-link>
+                            </div>
+                            <el-row type="flex" align="middle" class="post-info" justify="space-between">
+                                <div>   
+                                    <span class="location"><i class="iconfont el-icon-location-outline"></i>{{item.cityName}}</span>
+                                    <span>by</span>
+                                    <span class="userInfo">
+                                        <nuxt-link to="">
+                                            <img :src="`${$axios.defaults.baseURL}${item.account.defaultAvatar}`" alt="" class="userImg">
+                                            <span class="userName">{{item.account.nickname}}</span>
+                                        </nuxt-link>
+                                    </span>
+                                    <span class="viewCount"><i class="iconfont el-icon-view"></i>{{item.watch}}</span>
+                                </div>
+                                <span class="like" v-if="item.like">{{item.like}} 赞</span>
+                                <span class="like" v-else>0 赞</span>
+                            </el-row>
+                        </div> 
+                    </el-row>
+                    
+                </li>
+            </ul>
+            <div class="three" v-if="item.images.length>2">
+                <div class="post-title">
+                    <nuxt-link :to="`/post/detail?id=${item.id}`">
+                        {{item.title}}
+                    </nuxt-link>
                 </div>
-                <span class="like">3点赞</span>
-            </el-row>
+                <div class="post-content">
+                    <nuxt-link :to="`/post/detail?id=${item.id}`">
+                        {{item.summary}}
+                    </nuxt-link>
+                </div>
+                <el-row type="flex" justify="space-between" class="post-pic" :gutter="20">
+                    <el-col :span="8" v-for="(itemImg,indexImg) in item.images" :key="indexImg">
+                        <nuxt-link :to="`/post/detail?id=${item.id}`">
+                            <img :src="`${itemImg}`" alt="" class="post-img">
+                        </nuxt-link>
+                    </el-col>
+                </el-row>
+                <el-row type="flex" align="middle" class="post-info" justify="space-between" style="width:100%;">
+                    <div>   
+                        <span class="location"><i class="iconfont el-icon-location-outline"></i>{{item.cityName}}</span>
+                        <span>by</span>
+                        <span class="userInfo">
+                            <nuxt-link to="">
+                                <img :src="`${$axios.defaults.baseURL}${item.account.defaultAvatar}`" alt="" class="userImg">
+                                <span class="userName">{{item.account.nickname}}</span>
+                            </nuxt-link>
+                        </span>
+                        <span class="viewCount"><i class="iconfont el-icon-view"></i>{{item.watch}}</span>
+                    </div>
+                    <span class="like" v-if="item.like">{{item.like}} 赞</span>
+                    <span class="like" v-else>0 赞</span>
+                </el-row>
+            </div>
         </div>
         <div class="block">
         <el-pagination
-            :current-page="1"
+            :current-page="pageList.pageNum"
             :page-sizes="[2, 3, 5, 10]"
-            :page-size="5"
+            :page-size="pageList.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
             @size-change="handleSizeChange"
@@ -81,17 +91,47 @@
 
 <script>
 export default {
+    props:{
+        data:{
+            type:Array,
+            default:[]
+        },
+        total:{
+            type:Number,
+            default:0,
+        }
+    },
     data(){
         return{
-            total:100,
+            // 需要传给父组件的数据集合
+            pageList:{
+                // 用哪条数据开始
+                page_start: 0,
+                // 每页显示多少条数据
+                pageSize: 2,
+                // 当前页码
+                pageNum: 1,
+            }
         }
     },
     methods:{
-        handleSizeChange(){
-            console.log("size变了")
+        handleSizeChange(val){
+            //每页显示条数赋值
+            this.pageList.pageSize=val
+            //开始数据从0开始
+            this.pageList.page_start=0;
+            //当前页码为1
+            this.pageList.pageNum=1
+            //传递事件以及数据给父组件
+            this.$emit('setPage',this.pageList)
         },
-        handleCurrentChange(){
-            console.log("当前页变了")
+        handleCurrentChange(val){
+            //切换当前页码
+            this.pageList.pageNum=val
+            //计算从那条开始
+            this.pageList.page_start=(val-1)*this.pageList.pageSize
+            // 传递数据给父组件
+            this.$emit('setPage',this.pageList)
         }
     }
 }
@@ -101,6 +141,7 @@ export default {
 .post-list{
     .post-img{
         width: 220px;
+        height: 150px;
         border:1px solid #ccc;
         object-fit: cover;
     }
@@ -143,8 +184,9 @@ export default {
         }
     }
     .post-content{
-        height: 65px;
-        margin:15px 0;
+        height: 55px;
+        overflow: hidden;
+        margin:15px 0 0 0;
         font-size: 14px;
         color:#666;
         cursor: pointer;
@@ -168,7 +210,8 @@ export default {
         border-bottom: 1px solid #ccc;
         padding-bottom: 15px;
         .post-img{
-            border:none
+            border:none;
+            margin-top: 15px;
         }
     }
 }
